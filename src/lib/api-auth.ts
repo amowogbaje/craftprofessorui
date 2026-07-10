@@ -68,6 +68,6 @@ export async function fetchCurrentUser() {
 
 /** Full-page navigation (not a fetch) — Google's own redirect flow needs the real browser URL bar. */
 export function googleLoginUrl(): string {
-  const apiBase = import.meta.env.VITE_API_URL ?? 'http://localhost:8000/api'
+  const apiBase = import.meta.env.VITE_API_URL ?? 'https://craftprofessor.amowogbaje.com/api'
   return `${apiBase}/auth/google/redirect`
 }
