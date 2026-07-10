@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { AUTH_LOGOUT_EVENT, clearToken, getToken } from './token'
 
-const baseURL = import.meta.env.VITE_API_URL ?? 'https://craftprofessor.amowogbaje.com/api'
+const baseURL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000/api'
 
 export const api = axios.create({ baseURL })
 
