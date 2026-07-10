@@ -1,0 +1,41 @@
+name: Deploy CraftProfessorUi to Namecheap
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Project
+        run: npm run build
+
+      - name: Deploy dist folder
+        env:
+          HOST: ${{ vars.HOST }}
+          USERNAME: ${{ vars.USERNAME }}
+          PORT: ${{ vars.PORT }}
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo "$SSH_KEY" > /tmp/private_key
+          chmod 600 /tmp/private_key
+
+          rsync -avz --delete \
+            -e "ssh -i /tmp/private_key -o StrictHostKeyChecking=no -p $PORT" \
+            dist/ \
+            $USERNAME@$HOST:/home/$USERNAME/craftprofessorui.amowogbaje.com/
