@@ -13,6 +13,7 @@ import { SeriesPage } from '@/pages/SeriesPage'
 import { WalletPage } from '@/pages/WalletPage'
 import { SettingsPage } from '@/pages/SettingsPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
+import { SocialAccountsPage } from '@/pages/SocialAccountsPage'
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="/series" element={<SeriesPage />} />
           <Route path="/wallet" element={<WalletPage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/social-accounts" element={<SocialAccountsPage />} />
         </Route>
       </Route>
 
