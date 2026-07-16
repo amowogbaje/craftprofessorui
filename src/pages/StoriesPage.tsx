@@ -79,7 +79,7 @@ export function StoriesPage() {
               <CardContent className="flex items-center justify-between gap-4 py-4">
                 <div className="min-w-0">
                   <p className="truncate text-sm">
-                    {story.user_supplied_text?.slice(0, 140) ?? story.medium_link ?? 'Untitled story'}
+                    {story.user_supplied_text?.slice(0, 140) ?? story.story_link ?? 'Untitled story'}
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground">
                     {story.series ? `Series: ${story.series.title}` : 'Standalone'} ·{' '}

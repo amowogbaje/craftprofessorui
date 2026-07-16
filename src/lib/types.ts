@@ -51,7 +51,7 @@ export interface Story {
   user_id: number
   series_id: number | null
   episode_number: number | null
-  medium_link: string | null
+  story_link: string | null
   story_text: string | null
   user_supplied_text: string | null
   prompt_generated: boolean
