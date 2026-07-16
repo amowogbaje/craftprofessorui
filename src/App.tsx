@@ -32,7 +32,7 @@ export default function App() {
           <Route path="/series" element={<SeriesPage />} />
           <Route path="/wallet" element={<WalletPage />} />
           <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/social-accounts" element={<SocialAccountsPage />} />
+          <Route path="/settings/social-accounts" element={<SocialAccountsPage />} />
         </Route>
       </Route>
 
