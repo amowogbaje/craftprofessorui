@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'Feed', icon: LayoutGrid },
   { to: '/stories', label: 'Stories', icon: BookOpen },
-  { to: '/series', label: 'Series', icon: Layers },
+  // { to: '/series', label: 'Series', icon: Layers },
   { to: '/settings/social-accounts', label: 'Socials', icon: Link2 },
   { to: '/settings', label: 'Publish limits', icon: Settings },
 ]

@@ -9,7 +9,7 @@ import { ResetPasswordPage } from '@/pages/auth/ResetPasswordPage'
 import { OAuthCallbackPage } from '@/pages/auth/OAuthCallbackPage'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { StoriesPage } from '@/pages/StoriesPage'
-import { SeriesPage } from '@/pages/SeriesPage'
+// import { SeriesPage } from '@/pages/SeriesPage'
 import { WalletPage } from '@/pages/WalletPage'
 import { SettingsPage } from '@/pages/SettingsPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
@@ -29,7 +29,7 @@ export default function App() {
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/stories" element={<StoriesPage />} />
-          <Route path="/series" element={<SeriesPage />} />
+          {/* <Route path="/series" element={<SeriesPage />} /> */}
           <Route path="/wallet" element={<WalletPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/settings/social-accounts" element={<SocialAccountsPage />} />
