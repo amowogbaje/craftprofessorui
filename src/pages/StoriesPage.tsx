@@ -8,6 +8,8 @@ import { Badge } from '@/components/ui/badge'
 import { fetchStories, submitStory } from '@/lib/api-content'
 import { apiErrorMessage } from '@/lib/http'
 import { useToast } from '@/components/ui/use-toast'
+import { Input } from '@/components/ui/input'
+
 
 export function StoriesPage() {
   const [text, setText] = useState('')
@@ -54,6 +56,7 @@ export function StoriesPage() {
               onChange={(e) => setStoryLink(e.target.value)}
               placeholder="https://example.com/original-story (optional)"
             />
+            
             <Textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
