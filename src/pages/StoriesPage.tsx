@@ -11,15 +11,17 @@ import { useToast } from '@/components/ui/use-toast'
 
 export function StoriesPage() {
   const [text, setText] = useState('')
+  const [storyLink, setStoryLink] = useState('')
   const { toast } = useToast()
   const queryClient = useQueryClient()
 
   const { data, isLoading } = useQuery({ queryKey: ['stories'], queryFn: fetchStories })
 
   const mutation = useMutation({
-    mutationFn: () => submitStory(text),
+    mutationFn: () => submitStory(text, storyLink),
     onSuccess: () => {
       setText('')
+      setStoryLink('')
       queryClient.invalidateQueries({ queryKey: ['stories'] })
       toast({ title: 'Story submitted', description: 'Prompts will start generating shortly.' })
     },
@@ -46,6 +48,12 @@ export function StoriesPage() {
             }}
             className="flex flex-col gap-3"
           >
+            <Input
+              type="url"
+              value={storyLink}
+              onChange={(e) => setStoryLink(e.target.value)}
+              placeholder="https://example.com/original-story (optional)"
+            />
             <Textarea
               value={text}
               onChange={(e) => setText(e.target.value)}

@@ -26,8 +26,11 @@ export async function fetchStories() {
   return data
 }
 
-export async function submitStory(text: string) {
-  const { data } = await api.post<{ message: string; story: Story }>('/stories', { text })
+export async function submitStory(text: string, storyLink?: string) {
+  const { data } = await api.post<{ message: string; story: Story }>('/stories', {
+    text,
+    story_link: storyLink || undefined,
+  })
   return data
 }
 
