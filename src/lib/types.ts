@@ -43,6 +43,7 @@ export interface FeedItem {
   story_id?: number
   has_video?: boolean
   source_image_prompt_id?: number
+  pinterest_pin_id?: string | null
   sort_at: string
 }
 

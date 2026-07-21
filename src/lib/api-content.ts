@@ -16,6 +16,13 @@ export async function updateFeedItemStatus(
   return data
 }
 
+export async function deleteFeedItem(item: Pick<FeedItem, 'type' | 'id'>) {
+  const { data } = await api.delete<{ message: string }>('/dashboard/media', {
+    data: { type: item.type, resource_id: item.id },
+  })
+  return data
+}
+
 export async function requestVideo(imagePromptId: number) {
   const { data } = await api.post<{ message: string }>(`/story-image-prompts/${imagePromptId}/video`)
   return data

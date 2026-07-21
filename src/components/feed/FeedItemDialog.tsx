@@ -1,19 +1,20 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Clapperboard, Loader2 } from 'lucide-react'
+import { Clapperboard, ExternalLink, Loader2, Trash2 } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { StatusChip } from './StatusChip'
-import { updateFeedItemStatus, requestVideo } from '@/lib/api-content'
+import { updateFeedItemStatus, requestVideo, deleteFeedItem } from '@/lib/api-content'
 import { apiErrorMessage } from '@/lib/http'
 import { useToast } from '@/components/ui/use-toast'
 import type { FeedItem } from '@/lib/types'
 
 export function FeedItemDialog({ item, onClose }: { item: FeedItem | null; onClose: () => void }) {
   const [scheduledAt, setScheduledAt] = useState('')
+  const [confirmDelete, setConfirmDelete] = useState(false)
   const queryClient = useQueryClient()
   const { toast } = useToast()
 
@@ -39,10 +40,36 @@ export function FeedItemDialog({ item, onClose }: { item: FeedItem | null; onClo
       toast({ title: 'Could not start video generation', description: apiErrorMessage(err), variant: 'destructive' }),
   })
 
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteFeedItem(item!),
+    onSuccess: () => {
+      invalidate()
+      toast({ title: item!.type === 'video' ? 'Video deleted' : 'Image deleted' })
+      onClose()
+    },
+    onError: (err) => {
+      toast({ title: 'Could not delete', description: apiErrorMessage(err), variant: 'destructive' })
+      setConfirmDelete(false)
+    },
+  })
+
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      setConfirmDelete(false)
+      onClose()
+    }
+  }
+
+  useEffect(() => {
+    setConfirmDelete(false)
+  }, [item?.type, item?.id])
+
   if (!item) return null
 
+  const pinUrl = item.type === 'image' && item.pinterest_pin_id ? `https://www.pinterest.com/pin/${item.pinterest_pin_id}/` : null
+
   return (
-    <Dialog open={!!item} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={!!item} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <div className="flex items-center gap-2">
@@ -50,6 +77,18 @@ export function FeedItemDialog({ item, onClose }: { item: FeedItem | null; onClo
             <StatusChip status={item.status} scheduledAt={item.scheduled_at} />
           </div>
           {item.prompt && <DialogDescription>{item.prompt}</DialogDescription>}
+
+          {pinUrl && (
+            <a
+              href={pinUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex w-fit items-center gap-1.5 text-xs text-primary underline-offset-4 hover:underline"
+            >
+              <ExternalLink className="h-3 w-3" />
+              View pin on Pinterest
+            </a>
+          )}
         </DialogHeader>
 
         <div className="overflow-hidden rounded-md border border-border bg-secondary">
@@ -78,22 +117,58 @@ export function FeedItemDialog({ item, onClose }: { item: FeedItem | null; onClo
             Move to draft
           </Button>
 
-          {item.type === 'image' && !item.has_video && (
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={videoMutation.isPending}
-              onClick={() => videoMutation.mutate()}
-              className="ml-auto gap-1.5"
-            >
-              {videoMutation.isPending ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              ) : (
-                <Clapperboard className="h-3.5 w-3.5" />
-              )}
-              Generate video
-            </Button>
-          )}
+          <div className="ml-auto flex items-center gap-2">
+            {item.type === 'image' && !item.has_video && (
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={videoMutation.isPending}
+                onClick={() => videoMutation.mutate()}
+                className="gap-1.5"
+              >
+                {videoMutation.isPending ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Clapperboard className="h-3.5 w-3.5" />
+                )}
+                Generate video
+              </Button>
+            )}
+
+            {confirmDelete ? (
+              <>
+                <span className="text-xs text-muted-foreground">Delete for good?</span>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  disabled={deleteMutation.isPending}
+                  onClick={() => deleteMutation.mutate()}
+                  className="gap-1.5"
+                >
+                  {deleteMutation.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+                  Confirm
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={deleteMutation.isPending}
+                  onClick={() => setConfirmDelete(false)}
+                >
+                  Cancel
+                </Button>
+              </>
+            ) : (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setConfirmDelete(true)}
+                className="gap-1.5 text-destructive hover:bg-destructive/10 hover:text-destructive"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+                Delete
+              </Button>
+            )}
+          </div>
         </div>
 
         <Separator />
