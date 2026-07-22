@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Clapperboard, ExternalLink, Loader2, Trash2 } from 'lucide-react'
+import { Clapperboard, Copy, Check, ExternalLink, Loader2, Trash2 } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -15,6 +15,7 @@ import type { FeedItem } from '@/lib/types'
 export function FeedItemDialog({ item, onClose }: { item: FeedItem | null; onClose: () => void }) {
   const [scheduledAt, setScheduledAt] = useState('')
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [copied, setCopied] = useState(false)
   const queryClient = useQueryClient()
   const { toast } = useToast()
 
@@ -53,15 +54,29 @@ export function FeedItemDialog({ item, onClose }: { item: FeedItem | null; onClo
     },
   })
 
+  const handleCopyUrl = async () => {
+    if (!item?.url) return
+    try {
+      await navigator.clipboard.writeText(item.url)
+      setCopied(true)
+      toast({ title: 'URL copied to clipboard' })
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      toast({ title: 'Failed to copy URL', variant: 'destructive' })
+    }
+  }
+
   const handleOpenChange = (open: boolean) => {
     if (!open) {
       setConfirmDelete(false)
+      setCopied(false)
       onClose()
     }
   }
 
   useEffect(() => {
     setConfirmDelete(false)
+    setCopied(false)
   }, [item?.type, item?.id])
 
   if (!item) return null
@@ -134,6 +149,16 @@ export function FeedItemDialog({ item, onClose }: { item: FeedItem | null; onClo
                 Generate video
               </Button>
             )}
+
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleCopyUrl}
+              className="gap-1.5"
+            >
+              {copied ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
+              {copied ? 'Copied' : 'Copy URL'}
+            </Button>
 
             {confirmDelete ? (
               <>
